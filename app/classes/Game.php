@@ -25,6 +25,10 @@ class Game
 		[
 			'tokens' => ['create', 'member', 'word'],
 			'method' => 'createMember'
+		],
+		[
+			'tokens' => ['describe', 'guild', 'word'],
+			'method' => 'describeGuild'
 		]
 	];
 
@@ -41,7 +45,7 @@ class Game
 
 		foreach (self::$actions as $action) {
 			if ($action['tokens'] === $tokens) {
-				self::$action['method']($stream);
+				return self::$action['method']($stream);
 			}
 		}
 	}
@@ -66,4 +70,11 @@ class Game
 		$guild = Guild::where('name', '=', $guildName)->firstOrFail();
 		$guild->members()->attach($member);
 	}
-} 
+
+	public static function describeGuild($stream)
+	{
+		$guildName = $stream->get(2)->getValue();
+		$guild = Guild::where('name', '=', $guildName)->firstOrFail();
+		return $guild->describe();
+	}
+}
